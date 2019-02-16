@@ -54,6 +54,11 @@ def implied_vol(s,k,r,q,t,optionprice,option_type):
     f = lambda x : bs_price(s,k,r,q,t,x,option_type) - optionprice
     return scipy.optimize.brentq(f,0,5)
 
+def bsm_implied_vol(s0,k,T,t,r,c0,option_type,sigma_est,it=100):
+    for i in range(it):
+        sigma_est = sigma_est - (bs_price(s,k,r,q,t,sigma_est,option_type)-c0)/bsm_vega(s0,k,T,t,r,sigma_est)
+    return sigma_est
+
 #%%
 print(implied_vol2(s,k,r,q,t,optionprice,option_type))
 print( '%0.3f' %(implied_vol(s,k,r,q,t,optionprice,option_type)))
