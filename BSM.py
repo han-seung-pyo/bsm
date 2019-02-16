@@ -80,16 +80,13 @@ def bs_gamma(s,k,r,q,t,sigma):
     gamma = (np.exp(-q*t) * norm.pdf(d1(s,k,r,t,q,sigma)))/(s*sigma*np.sqrt(t))
     return gamma
 #%%
-#Implied volatility
-def implied_vol(s,k,r,q,t,optionprice,option_type,init=0.1,tol=1e-6):
-    err = 1
-    vol = init
-    while abs(err) > tol:
-        err = optionprice -bs_price(s,k,r,q,t,vol,option_type)
-        vol = vol + err/bs_vega(s,k,r,q,t,vol)
-    return vol.round(3)    
-
-def bisection(s,k,r,q,t,optionprice,option_type,low_vol, high_vol,tol):       
+#뉴턴랩슨 방식으로 implied vol 구하기
+def bsm_implied_vol(s0,k,T,t,r,c0,option_type,sigma_est,it=100):
+    for i in range(it):
+        sigma_est = sigma_est - (bs_price(s,k,r,q,T,sigma_est,option_type)-c0)/bsm_vega(s0,k,T,t,r,sigma_est)
+    
+    return sigma_est
+       
 
 #%%    
 #bs_prise and delta
